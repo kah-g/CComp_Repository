@@ -1,4 +1,12 @@
-#include "baralho.c"
+#include "jogo.h"
+
+int main () {
+  Menu ();
+  return 0;
+}
+
+/* Teste para baralho.c
+#include "baralho.h"
 
 int main () {
   printf("Que comecem os teste: \n");
@@ -13,3 +21,4 @@ int main () {
   PrintaCarta(trunfo);
   PrintaBaralho(brlE);
 }
+*/

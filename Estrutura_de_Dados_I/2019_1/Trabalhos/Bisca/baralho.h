@@ -15,6 +15,8 @@ CelulaBaralho* RetiraCarta (int naipe, int valor, Baralho *brl);
 void InsereCarta (CelulaBaralho *cb, Baralho *brl);
 Baralho* EmbaralharBaralho (Baralho *brl);
 Carta* CortaBaralho (Baralho *brl);
+int VerificaBaralho (Baralho *brl);
+CelulaBaralho* RetiraCartaTopo (Baralho *brl);
 
 void PrintaBaralho (Baralho *brl);
 void PrintaCarta (Carta *ct);

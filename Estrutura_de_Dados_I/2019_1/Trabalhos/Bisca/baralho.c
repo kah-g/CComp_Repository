@@ -165,13 +165,6 @@ Baralho* EmbaralharBaralho (Baralho *brl) {
     }
     aux2 = RetiraCarta(aux->ct->naipe, aux->ct->valor, brl);
     InsereCarta(aux2, brlE);
-    /*printf("\n\nBaralho Original\n\n\n");
-    PrintaBaralho(brl);
-    printf("\nCartas O: %d\n\n", brl->quantidade);
-    printf("\n\nBaralho Embaralhado\n\n\n");
-    PrintaBaralho(brlE);
-    printf("\nCartas E: %d\n\n", brlE->quantidade);
-    */
   }
   free(brl); //esse baralho ja esta vazio
   return brlE;
@@ -192,6 +185,37 @@ Carta* CortaBaralho (Baralho *brl) {
   trunfo = aux2->ct;
   InsereCarta(aux2, brl);
   return trunfo;
+}
+
+int VerificaBaralho (Baralho *brl) {
+  //retorna a quantidade de cartas naquele baralho
+  if(brl == NULL) {
+    return -1; //baralho nao inicializado
+  }
+  if(brl->prim == NULL && brl->ult == NULL) {
+    return 0; //baralho vazio
+  } else {
+    return brl->quantidade; //retorna a quantidade de cartar no baralho
+  }
+}
+
+CelulaBaralho* RetiraCartaTopo (Baralho *brl) {
+  CelulaBaralho *aux;
+  if (VerificaBaralho(brl) == 0 || VerificaBaralho(brl) == -1) {
+    printf("ERRO: Baralho vazio ou nulo.\n");
+    exit(1);
+  }
+  aux = brl->prim;
+  if(brl->quantidade == 1) {
+    brl->prim = NULL;
+    brl->ult = NULL;
+    brl->quantidade--;
+    return aux;
+  }
+  brl->prim = aux->prox;
+  aux->prox = NULL;
+  brl->quantidade--;
+  return aux;
 }
 
 void PrintaBaralho (Baralho *brl) {
