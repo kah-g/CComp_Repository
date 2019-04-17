@@ -1,10 +1,19 @@
 #ifndef JOGO_H
 #define JOGO_H
 
-#include "jogador.h"
-#include "jogadorIA.h"
+#include "baralho.h"
+
+typedef struct jogador Jogador;
+typedef struct celulajogador CelulaJogador;
+typedef struct players Players;
 
 void Menu ();
-void IniciaJogo1 ();
+CelulaJogador* InicializaJogador ();
+Players* InicializaJogo01 ();
+CelulaBaralho* JogadaReal (Jogador* jogg);
+
+
+void IniciaJogo (int tipoJogo);
+void DistribuiCartas (Baralho *brl, Players *jogadores);
 
 #endif
