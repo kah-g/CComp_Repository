@@ -9,8 +9,10 @@ typedef struct players Players;
 
 void Menu ();
 CelulaJogador* InicializaJogador ();
+CelulaJogador* InicializaJogadorIA ();
 Players* InicializaJogo01 ();
 CelulaBaralho* JogadaReal (Jogador* jogg);
+CelulaBaralho* JogadaIA (Jogador* jogg);
 
 
 void IniciaJogo (int tipoJogo);

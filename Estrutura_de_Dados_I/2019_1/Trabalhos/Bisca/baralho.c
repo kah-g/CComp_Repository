@@ -218,6 +218,132 @@ CelulaBaralho* RetiraCartaTopo (Baralho *brl) {
   return aux;
 }
 
+CelulaBaralho* RetiraCartaGambiarra (CelulaBaralho *carta, Baralho *brl){
+  //mesma funcao que a retira carta porem nao passando as informacoes da carta
+  //inclusive utiliza a funcao retira carta original
+  return RetiraCarta(carta->ct->naipe, carta->ct->valor, brl);
+}
+
+CelulaBaralho* RetornaCartaPrim (Baralho *brl) {
+  //retorna brl->prim, obviously
+  return brl->prim;
+}
+
+CelulaBaralho* RetornaCartaProx (CelulaBaralho* CartaAtual) {
+  //o nome diz tudo
+  return CartaAtual->prox;
+}
+
+CelulaBaralho* RetornaCartaUlt (Baralho* brl) {
+  //nome auto-explicativo
+  return brl->ult;
+}
+
+int ComparaCartas (Baralho* brl, Carta* trunfo) {
+  //retorna a posicao da maior Carta
+  //todas as cartas vao pro monte do jogador que estiver naquela posicao
+  int num = 0, Pos;
+  int np0 = 0, np1 = 0, np2 = 0, np3 = 0;
+  int vl0 = 0, vl1 = 0, vl2 = 0, vl3 = 0;
+  CelulaBaralho *aux = brl->prim;
+  for(int i=0; i < brl->quantidade; i++) {
+    if(aux->ct->naipe == trunfo->naipe) {
+      if(num != 0) {
+        if(num < aux->ct->valor) {
+          num = aux->ct->valor;
+          Pos = i;
+        }
+      } else {
+        num = aux->ct->valor;
+        Pos = i;
+      }
+    }
+    if(aux->ct->naipe != trunfo->naipe) {
+      if(aux->ct->naipe == 0) {
+        np0++;
+        if(vl0 != 0) {
+          if(aux->ct->valor > vl0) {
+            vl0 = aux->ct->valor;
+          }
+        } else {
+          vl0 = aux->ct->valor;
+        }
+      }
+      if(aux->ct->naipe == 1) {
+        np1++;
+        if(vl1 != 0) {
+          if(aux->ct->valor > vl1) {
+            vl1 = aux->ct->valor;
+          }
+        } else {
+          vl1 = aux->ct->valor;
+        }
+      }
+      if(aux->ct->naipe == 2) {
+        np2++;
+        if(vl2 != 0) {
+          if(aux->ct->valor > vl2) {
+            vl2 = aux->ct->valor;
+          }
+        } else {
+          vl2 = aux->ct->valor;
+        }
+      }
+      if(aux->ct->naipe == 3) {
+        np3++;
+        if(vl3 != 0) {
+          if(aux->ct->valor > vl3) {
+            vl3 = aux->ct->valor;
+          }
+        } else {
+          vl3 = aux->ct->valor;
+        }
+      }
+    }
+    aux = aux->prox;
+  }
+  if(num != 0) {
+    return Pos;
+  } else {
+    if((np0 > 1) || (np1 > 1) || (np2 > 1) || (np3 > 1)) {
+      CelulaBaralho *aux = brl->prim;
+      if((np0 > 1) && !((np1 > 1) || (np2 > 1 || (np3 > 1)))) {
+        for(int i=0; i < brl->quantidade; i++) {
+          if(aux->ct->naipe == 0 && aux->ct->valor == vl0) {
+            return i;
+          }
+          aux = aux->prox;
+        }
+      }
+      if((np1 > 1) && !((np0 > 1) || (np2 > 1 || (np3 > 1)))) {
+        for(int i=0; i < brl->quantidade; i++) {
+          if(aux->ct->naipe == 1 && aux->ct->valor == vl1) {
+            return i;
+          }
+          aux = aux->prox;
+        }
+      }
+      if((np2 > 1) && !((np1 > 1) || (np0 > 1 || (np3 > 1)))) {
+        for(int i=0; i < brl->quantidade; i++) {
+          if(aux->ct->naipe == 2 && aux->ct->valor == vl2) {
+            return i;
+          }
+          aux = aux->prox;
+        }
+      }
+      if((np3 > 1) && !((np1 > 1) || (np2 > 1 || (np0 > 1)))) {
+        for(int i=0; i < brl->quantidade; i++) {
+          if(aux->ct->naipe == 3 && aux->ct->valor == vl3) {
+            return i;
+          }
+          aux = aux->prox;
+        }
+      }
+    }
+    return 0;
+  }
+}
+
 void PrintaBaralho (Baralho *brl) {
   CelulaBaralho *aux;
   aux = brl->prim;
@@ -273,7 +399,7 @@ void PrintaBaralho (Baralho *brl) {
     printf("\n");
     aux = aux->prox;
   }
-  printf("\nCartas: %d\n", brl->quantidade);
+  printf("Cartas: %d\n", brl->quantidade);
 }
 
 void PrintaCarta (Carta *ct) {
@@ -327,4 +453,9 @@ void PrintaCarta (Carta *ct) {
       break;
   }
   printf("\n\n");
+}
+
+void PrintaCelulaCarta (CelulaBaralho *ctbrl) {
+  //printa a carta mas recebendo a celula baralho
+  PrintaCarta(ctbrl->ct);
 }

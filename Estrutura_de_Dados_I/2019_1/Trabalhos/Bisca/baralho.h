@@ -17,8 +17,15 @@ Baralho* EmbaralharBaralho (Baralho *brl);
 Carta* CortaBaralho (Baralho *brl);
 int VerificaBaralho (Baralho *brl);
 CelulaBaralho* RetiraCartaTopo (Baralho *brl);
+CelulaBaralho* RetiraCartaGambiarra (CelulaBaralho *carta, Baralho *brl);
+CelulaBaralho* RetornaCartaPrim (Baralho *brl);
+CelulaBaralho* RetornaCartaProx (CelulaBaralho* CartaAtual);
+CelulaBaralho* RetornaCartaUlt (Baralho* brl);
+int ComparaCartas (Baralho* brl, Carta* trunfo);
+
 
 void PrintaBaralho (Baralho *brl);
 void PrintaCarta (Carta *ct);
+void PrintaCelulaCarta (CelulaBaralho *ctbrl);
 
 #endif
