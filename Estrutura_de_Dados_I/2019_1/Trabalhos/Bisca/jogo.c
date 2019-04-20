@@ -18,27 +18,36 @@ struct players {
 };
 
 void Menu () {
-  printf("---------- Bem vindo a Bisca Virtual!!!! ----------\n\n");
+  printf("################ Bem vindo a Bisca Virtual!!!! ################\n\n");
   int op1 = 0, op2 = 0;
   do {
     printf("Escolha um modo de jogo:\n1-Jogo com 2 players.\n2-Jogo com 4 players.\n3-Sair\n");
     scanf("%d", &op1);
-  }while (op1 < 1 && op1 > 3);
+  }while (op1 < 1 || op1 > 3);
   if (op1 == 3) {
     exit(0);
   }
   do {
-    printf("Agora escolha a dificuldade:\n1-Facil.\n2-Dificil.\n3-Sair.\n");
+    printf("\nAgora escolha a dificuldade:\n1-Facil.\n2-Dificil.\n3-Sair.\n");
     scanf("%d", &op2);
-  }while (op2 < 1 && op2 > 3);
+  }while (op2 < 1 || op2 > 3);
   if(op1 == 1 && op2 == 1) {
     IniciaJogo(1);
     //se modo de jogo e 1 e a dificuldade e 1, entao passa 1 como parametro de inicia jogo
   }
-  if (op1 == 3) {
-    exit(0);
-  } else {
+  if(op1 == 2 && op2 == 1) {
+    IniciaJogo(2);
+    //se modo de jogo e 2 e a dificuldade e 1, entao passa 2 como parametro
+  }
+  if(op1 == 1 && op2 == 2) {
     printf("Opa, essas opcoes ainda nao estao prontas. Sorryyyy!\n\n");
+    exit(0);
+  }
+  if(op1 == 2 && op2 == 2) {
+    printf("Opa, essas opcoes ainda nao estao prontas. Sorryyyy!\n\n");
+    exit(0);
+  }
+  if(op1 == 3) {
     exit(0);
   }
 }
@@ -65,25 +74,82 @@ CelulaJogador* InicializaJogadorIA () {
   return jogg;
 }
 
-Players* InicializaJogo (int tipoJogo) {
+int InicializaJogo (int tipoJogo, Players *jogadores) {
   if(tipoJogo == 1) {
-    //so inicia dois jogadores
-    CelulaJogador *jogadorReal = InicializaJogador();
-    CelulaJogador *jogadorIA = InicializaJogadorIA();
-    Players *jogo01 = (Players*) malloc (sizeof(Players));
-    //precisa de um metodo de selecionar quem comeca o jogo
-    //essa parte tera que ser refeita
-    jogo01->prim = jogadorReal;
+    //inicia dois jogadores no modo facil
+    CelulaJogador *jogadorReal = InicializaJogador(); //sempre e o numero 0
+    CelulaJogador *jogadorIA = InicializaJogadorIA(); //numero 1
+    srand(time(0));
+    int aleatorio = rand()%2; //sorteando quem comeca o jogo
+    int PontoCorte = 0;
+    if(aleatorio == 0) {
+      do {
+        printf("\nEscolha onde cortar o baralho, entre 1 e 40.\n");
+        scanf("%d", &PontoCorte);
+      } while ((PontoCorte < 1) && (PontoCorte > 40));
+      PontoCorte--;
+      jogadores->prim = jogadorReal;
+      printf("Voce eh o jogador: 1.\n");
+    } else {
+      PontoCorte = rand()%40;
+      printf("\nJogador IA 1 cortou o baralho em: %d\n", PontoCorte);
+      jogadores->prim = jogadorIA;
+      printf("Voce eh o jogador: 2.\n");
+    }
     jogadorReal->prox = jogadorIA;
-    jogadorIA->prox = jogo01->prim;
-    jogo01->QttJogadores = 2;
-    return jogo01;
+    jogadorIA->prox = jogadorReal;
+    jogadores->QttJogadores = 2;
+    return PontoCorte;
+  }
+  if(tipoJogo == 2) {
+    //inicia 4 jogadores no modo facil
+    CelulaJogador *jogadorReal = InicializaJogador(); //sempre e o numero 0
+    CelulaJogador *jogadorIA1 = InicializaJogadorIA(); //numero 1
+    CelulaJogador *jogadorIA2 = InicializaJogadorIA(); //numero 2
+    CelulaJogador *jogadorIA3 = InicializaJogadorIA(); //numero 3
+    srand(time(0));
+    int aleatorio = rand()%4; //sorteando quem comeca o jogo
+    int PontoCorte = 0;
+    if(aleatorio == 0) {
+      do {
+        printf("\nEscolha onde cortar o baralho, entre 1 e 40.\n");
+        scanf("%d", &PontoCorte);
+      } while ((PontoCorte < 1) || (PontoCorte > 40));
+      PontoCorte--;
+      jogadores->prim = jogadorReal;
+    } else {
+      if(aleatorio == 1) {
+        jogadores->prim = jogadorIA1;
+      }
+      if(aleatorio == 2) {
+        jogadores->prim = jogadorIA2;
+      }
+      if(aleatorio == 3) {
+        jogadores->prim = jogadorIA3;
+      }
+      PontoCorte = rand()%40;
+      printf("\nJogador IA %d cortou o baralho em: %d\n", aleatorio, PontoCorte);
+    }
+    jogadorReal->prox = jogadorIA1;
+    jogadorIA1->prox = jogadorIA2;
+    jogadorIA2->prox = jogadorIA3;
+    jogadorIA3->prox = jogadorReal;
+    jogadores->QttJogadores = 4;
+    CelulaJogador *aux = jogadores->prim;
+    for(int l=0; l < jogadores->QttJogadores; l++) {
+      if(aux->jog->ia == 0) {
+        printf("Voce eh o jogador: %d.\n", l+1);
+      }
+      aux = aux->prox;
+    }
+    return PontoCorte;
   }
 }
 
 CelulaBaralho* JogadaReal (Jogador* jogg) {
-  printf("Cartas na Mao:\n");
-  PrintaBaralho(jogg->mao);
+  printf("+++++++++++ Sua vez +++++++++++\n");
+  printf("\nCartas na Mao:\n");
+  PrintaBaralhoNumerado(jogg->mao);
   int qut = VerificaBaralho(jogg->mao);
   if(qut < 3) {
     if(qut == 2) {
@@ -104,7 +170,7 @@ CelulaBaralho* JogadaReal (Jogador* jogg) {
           return aux;
       }
     } else {
-      printf("Ultima carta jogada automaticamente\n");
+      printf("\nUltima carta jogada automaticamente\n");
       CelulaBaralho *aux = RetornaCartaPrim(jogg->mao);
       aux = RetiraCartaGambiarra(aux,jogg->mao);
       return aux;
@@ -174,35 +240,71 @@ CelulaBaralho* JogadaIA (Jogador* jogg) {
   }
 }
 
+void LimparPlayers (Players *jogadores) {
+  CelulaJogador *aux = jogadores->prim;
+  if(aux == NULL || jogadores->QttJogadores == 0) {
+    free(jogadores);
+  } else {
+    if(jogadores->QttJogadores > 1) {
+      CelulaJogador *aux2;
+      for(int i=0; i < jogadores->QttJogadores; i++) {
+        aux2 = aux;
+        aux = aux->prox;
+        LimparBaralhos(aux2->jog->mao);
+        LimparBaralhos(aux2->jog->monte);
+        free(aux2->jog);
+        free(aux2);
+      }
+      free(jogadores);
+    } else {
+      if(jogadores->QttJogadores == 1) {
+        LimparBaralhos(aux->jog->mao);
+        LimparBaralhos(aux->jog->monte);
+        free(aux->jog);
+        free(aux);
+        free(jogadores);
+      }
+    }
+  }
+}
 
 void IniciaJogo (int tipoJogo) {
   Baralho* brl = InicializaBaralho();
   brl = EmbaralharBaralho(brl);
-  Carta* trunfo = CortaBaralho(brl);
-  printf("\nTrunfo do Jogo:");
-  PrintaCarta(trunfo);
-  Players* jogadores = InicializaJogo(tipoJogo);
+  Players *jogadores = (Players*) malloc (sizeof(Players));
+  int PontoCorte = InicializaJogo(tipoJogo, jogadores);
+  Carta* trunfo = CortaBaralho(brl, PontoCorte);
+  /*printf("\nTrunfo do Jogo:");
+  PrintaCarta(trunfo);*/
   DistribuiCartas(brl, jogadores);
   Baralho* mesa = InicializaBaralhoVazio();
   int rodadas=0;
   if(tipoJogo == 1) {
     rodadas = 40/2;
   }
+  if(tipoJogo == 2) {
+    rodadas = 40/4;
+  }
   for(int l=0; l < rodadas; l++) {
-    //int j=1;
+    printf("---------------- Rodada %d de %d. ---------------- \n", l+1, rodadas);
+    printf("\nTrunfo do Jogo: ");
+    PrintaCarta(trunfo);
     CelulaJogador *auxJ = jogadores->prim;
     for(int i=0; i < jogadores->QttJogadores; i++) {
       CelulaBaralho *aux;
       if(auxJ->jog->ia == 0) {
         aux = JogadaReal(auxJ->jog);
       } else {
+        printf("+++++++++++ Vez do Jogador %d (IA). +++++++++++\n", i+1);
         aux = JogadaIA(auxJ->jog);
       }
+      printf("Carta Jogada: ");
+      PrintaCelulaCarta(aux);
       InsereCarta(aux, mesa);
       auxJ = auxJ->prox;
+      printf("Mesa:\n");
+      PrintaBaralho(mesa);
     }
-    printf("\nMesa:\n");
-    PrintaBaralho(mesa);
     int gan = ComparaCartas(mesa, trunfo);
     //printar a ganhadora
     CelulaBaralho *CtGan = RetornaCartaPrim(mesa);
@@ -211,7 +313,7 @@ void IniciaJogo (int tipoJogo) {
       CtGan = RetornaCartaProx(CtGan);
       JogGan = JogGan->prox;
     }
-    printf("\nGanhadora:");
+    printf("Carta ganhadora da rodada: ");
     PrintaCelulaCarta(CtGan);
     //passa as cartas pro monte do jogador ganhador da rodada
     while(VerificaBaralho(mesa) > 0) {
@@ -227,10 +329,26 @@ void IniciaJogo (int tipoJogo) {
         JogComp = JogComp->prox;
       }
     }
-    printf("\nCartas no Baralho: %d\n", VerificaBaralho(brl));
-    //j++;
+    //printf("\nCartas no Baralho: %d\n", VerificaBaralho(brl));
+    printf("---------------- Fim da Rodada %d. ---------------- \n", l+1);
   }
-  printf("\n\nFim de Jogo\n");
+  //hora de contar os pontos
+  CelulaJogador *JogP = jogadores->prim;
+  int MaxPontos = 0, Gan;
+  for(int i=0; i < jogadores->QttJogadores; i++) {
+    JogP->jog->pontuacao = ContagemPontos(JogP->jog->monte);
+    printf("Pontuacao de jogador %d: %d.\n", i+1, JogP->jog->pontuacao);
+    if(JogP->jog->pontuacao > MaxPontos) {
+      Gan = i;
+      MaxPontos = JogP->jog->pontuacao;
+    }
+    JogP = JogP->prox;
+  }
+  printf("\nJogador %d ganhou. Pontuacao total: %d\n", Gan+1, MaxPontos);
+  LimparPlayers(jogadores);
+  LimparBaralhos(mesa);
+  LimparBaralhos(brl);
+  printf("\n################ Fim de Jogo. ################\n");
 }
 
 

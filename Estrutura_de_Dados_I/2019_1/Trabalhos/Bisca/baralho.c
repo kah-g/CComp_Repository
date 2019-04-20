@@ -1,11 +1,9 @@
 #include "baralho.h"
 
 struct carta {
-  //onde eu defino os naipes?
   int naipe;
   int valor;
   int pontos;
-  int trunfo;
 };
 
 struct celulaBaralho {
@@ -14,10 +12,9 @@ struct celulaBaralho {
 };
 
 struct baralho {
-  //maximo de cartas 40
   CelulaBaralho *prim;
   CelulaBaralho *ult;
-  int quantidade;
+  int quantidade; //maximo de cartas 40
 };
 
 Baralho* InicializaBaralho () {
@@ -170,15 +167,15 @@ Baralho* EmbaralharBaralho (Baralho *brl) {
   return brlE;
 }
 
-Carta* CortaBaralho (Baralho *brl) {
+Carta* CortaBaralho (Baralho *brl, int PontoCorte) {
   CelulaBaralho* aux; //percorre o baralho
   CelulaBaralho* aux2; //auxiliar na funcao retira
   Carta* trunfo;
-  int aleatorio;
-  srand(time(0));
+  //int aleatorio;
+  //srand(time(0));
   aux = brl->prim;
-  aleatorio = rand()%brl->quantidade;
-  for(int i=0; i < aleatorio; i++) {
+  //aleatorio = rand()%brl->quantidade;
+  for(int i=0; i < PontoCorte; i++) {
     aux = aux->prox;
   }
   aux2 = RetiraCarta(aux->ct->naipe, aux->ct->valor, brl);
@@ -344,6 +341,40 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
   }
 }
 
+int ContagemPontos (Baralho *brl) {
+  int pontos = 0;
+  CelulaBaralho *aux = brl->prim;
+  for(int i=0; i < brl->quantidade; i++) {
+    pontos+= aux->ct->pontos;
+    aux = aux->prox;
+  }
+  return pontos;
+}
+
+void LimparBaralhos (Baralho *brl) {
+  CelulaBaralho *aux = brl->prim;
+  if(aux == NULL || brl->quantidade == 0) {
+    free(brl);
+  } else {
+    if(brl->quantidade > 1) {
+      CelulaBaralho *aux2;
+      for(int i=0; i < brl->quantidade; i++) {
+        aux2 = aux;
+        aux = aux->prox;
+        free(aux2->ct);
+        free(aux2);
+      }
+      free(brl);
+    } else {
+      if(brl->quantidade == 1) {
+        free(aux->ct);
+        free(aux);
+        free(brl);
+      }
+    }
+  }
+}
+
 void PrintaBaralho (Baralho *brl) {
   CelulaBaralho *aux;
   aux = brl->prim;
@@ -399,11 +430,10 @@ void PrintaBaralho (Baralho *brl) {
     printf("\n");
     aux = aux->prox;
   }
-  printf("Cartas: %d\n", brl->quantidade);
+  printf("Cartas: %d\n\n", brl->quantidade);
 }
 
 void PrintaCarta (Carta *ct) {
-  printf("\n");
   printf("Naipe: ");
   switch (ct->naipe) {
     case 0:
@@ -458,4 +488,65 @@ void PrintaCarta (Carta *ct) {
 void PrintaCelulaCarta (CelulaBaralho *ctbrl) {
   //printa a carta mas recebendo a celula baralho
   PrintaCarta(ctbrl->ct);
+}
+
+void PrintaBaralhoNumerado (Baralho *brl) {
+  //mesma coisa que o PrintaBaralho porem coloca numeracao antes das cartas
+  CelulaBaralho *aux;
+  aux = brl->prim;
+  int i = 1;
+  while(aux != NULL) {
+    printf("%d - Naipe: ", i);
+    switch (aux->ct->naipe) {
+      case 0:
+        printf("OUROS  ,");
+        break;
+      case 1:
+        printf("ESPADAS  ,");
+        break;
+      case 2:
+        printf("COPAS  ,");
+        break;
+      case 3:
+        printf("PAUS  ,");
+        break;
+    }
+    printf("Valor: ");
+    switch (aux->ct->valor) {
+      case 1:
+        printf("AS.");
+        break;
+      case 2:
+        printf("2.");
+        break;
+      case 3:
+        printf("3.");
+        break;
+      case 4:
+        printf("4.");
+        break;
+      case 5:
+        printf("5.");
+        break;
+      case 6:
+        printf("6.");
+        break;
+      case 7:
+        printf("7.");
+        break;
+      case 11:
+        printf("VALETE.");
+        break;
+      case 12:
+        printf("RAINHA.");
+        break;
+     case 13:
+        printf("REI.");
+        break;
+    }
+    printf("\n");
+    aux = aux->prox;
+    i++;
+  }
+  printf("Cartas: %d\n\n", brl->quantidade);
 }
