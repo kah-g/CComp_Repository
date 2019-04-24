@@ -16,7 +16,7 @@ int main()
     ListaHet* lista = cria();
 
     //tenta retirar com lista vazia
-    //lista = retira_cliente(lista, 1);
+    lista = retira_cliente(lista, 1);
 
     // criando alguns alunos apenas para testar (mais adequado seria carregar de um arquivo)
     Cliente* maria = cria_cliente("maria", 1);
@@ -30,9 +30,7 @@ int main()
     Imovel* casa_sofia = cria_imovel (222, 1984, 500000);
     Imovel* casa_jose = cria_imovel (333, 1978, 600000);
 
-    //printf("oi\n");
-    /*
-    //inserindo elementos na lista
+   // inserindo elementos na lista
     lista = insere_movel (lista, sofia, carro_sofia);
     lista = insere_movel (lista, jose, carro1_jose);
     lista = insere_movel (lista, maria, carro_maria);
@@ -43,9 +41,9 @@ int main()
     imprime (lista);
 
 
-    float valor_assegurado_jose = calcula_valor_assegurado (lista, jose, 0.7, 0.25);
+    //float valor_assegurado_jose = calcula_valor_assegurado (lista, jose, 0.7, 0.25);
 
-    printf ("O valor assegurado de Jose eh: %f \n", valor_assegurado_jose);
+    //printf ("O valor assegurado de Jose eh: %f \n", valor_assegurado_jose);
 
 
     lista = retira_cliente (lista, 1);
@@ -66,5 +64,4 @@ int main()
 
 
     printf ("\n **** PARABENS!!! **** \n\n");
-    */
 }
