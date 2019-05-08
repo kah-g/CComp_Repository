@@ -40,7 +40,7 @@ Baralho* InicializaBaralho () {
       cb->ct->naipe = i;
       switch (j) {
         case 1:
-          cb->ct->valor = 1;
+          cb->ct->valor = 14; //as
           cb->ct->pontos = 11;
           break;
         case 2:
@@ -396,7 +396,7 @@ void PrintaBaralho (Baralho *brl) {
     }
     printf("Valor: ");
     switch (aux->ct->valor) {
-      case 1:
+      case 14:
         printf("AS.");
         break;
       case 2:
@@ -451,7 +451,7 @@ void PrintaCarta (Carta *ct) {
   }
   printf("Valor: ");
   switch (ct->valor) {
-    case 1:
+    case 14:
       printf("AS.");
       break;
     case 2:
@@ -513,7 +513,7 @@ void PrintaBaralhoNumerado (Baralho *brl) {
     }
     printf("Valor: ");
     switch (aux->ct->valor) {
-      case 1:
+      case 14:
         printf("AS.");
         break;
       case 2:
@@ -549,4 +549,17 @@ void PrintaBaralhoNumerado (Baralho *brl) {
     i++;
   }
   printf("Cartas: %d\n\n", brl->quantidade);
+}
+
+CelulaBaralho* CriaCarta (int naipe, int valor) {
+  CelulaBaralho *cb = (CelulaBaralho*) malloc (sizeof(CelulaBaralho));
+  cb->ct = (Carta*) malloc (sizeof(Carta));
+  cb->ct->naipe = naipe;
+  cb->ct->valor = valor;
+  return cb;
+}
+
+void LiberaCarta (CelulaBaralho* ct) {
+  free(ct->ct);
+  free(ct);
 }

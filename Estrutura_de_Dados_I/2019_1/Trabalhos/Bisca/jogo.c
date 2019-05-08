@@ -21,10 +21,14 @@ void Menu () {
   printf("################ Bem vindo a Bisca Virtual!!!! ################\n\n");
   int op1 = 0, op2 = 0;
   do {
-    printf("Escolha um modo de jogo:\n1-Jogo com 2 players.\n2-Jogo com 4 players.\n3-Sair\n");
+    printf("Escolha um modo de jogo:\n1-Jogo com 2 players.\n2-Jogo com 4 players.\n3-Modo Debug(teste).\n4-Sair\n");
     scanf("%d", &op1);
-  }while (op1 < 1 || op1 > 3);
-  if (op1 == 3) {
+  }while (op1 < 1 || op1 > 4);
+  if(op1 == 4) {
+    exit(0);
+  }
+  if(op1 == 3) {
+    Debug ();
     exit(0);
   }
   do {
@@ -361,4 +365,66 @@ void DistribuiCartas (Baralho *brl, Players *jogadores) {
       auxJ = auxJ->prox;
     }
   }
+}
+
+void Debug () {
+  printf("---------------- Modo Debug ----------------\n");
+  printf("Vamos começar criando um baralho.\n");
+  Baralho* debug = InicializaBaralho();
+  printf("Baralho criado.\n");
+  PrintaBaralho(debug);
+  int op=0;
+  do {
+    printf("Escolha uma das opcoes:\n1-Embaralhar o Baralho.\n2-Cortar o Baralho.\n3-Retirar Carta.\n4-Sair.\n");
+    scanf("%d", &op);
+    if(op == 1 || op == 2 || op == 3) {
+      if(VerificaBaralho(debug) > 1) {
+        if(op == 1) {
+          debug = EmbaralharBaralho(debug);
+          PrintaBaralho(debug);
+        }
+        if(op == 2) {
+          int op2 = 0;
+          do {
+            printf("Escolha onde cortar o baralho.\n");
+            scanf("%d", &op2);
+          }while (op2 < 1 || op2>VerificaBaralho(debug));
+          Carta* cortada = CortaBaralho(debug, op2);
+          printf("Carta cortada:\n");
+          PrintaCarta(cortada);
+          printf("Baralho apos o corte:\n");
+          PrintaBaralho(debug);
+        }
+        if(op == 3) {
+          int naipe, valor;
+          do {
+            printf("Escolha o naipe da carta a ser retirada:\n1-Ouro.\n2-Espadas.\n3-Copas.\n4-Paus");
+            scanf("%d", &naipe);
+            naipe--;
+          }while(naipe <0 || naipe >3);
+          do{
+            printf("Escolha o valor da carta a ser retirada:\n1-AS.\n11-Valete.\n12-Rainha.\n13-Rei");
+            scanf("%d", &valor);
+            if(valor == 1) {
+              valor = 14;
+            }
+          }while((valor <2 || valor >14) || (valor>= 8 && valor <=10));
+          CelulaBaralho* cb2;
+          CelulaBaralho* cbR;
+          cbR = CriaCarta(naipe, valor);
+          cb2 = RetiraCartaGambiarra(cbR, debug);
+          printf("Carta retirada:\n");
+          PrintaCelulaCarta(cbR);
+          printf("Baralho apos a retirada da carta:\n");
+          PrintaBaralho(debug);
+          LiberaCarta(cb2);
+          LiberaCarta(cbR);
+        }
+      } else {
+        printf("Erro: Baralho vazio ou nao existente.\n");
+      }
+    }
+  }while (op != 4);
+  LimparBaralhos(debug);
+  printf("---------------- Fim do Modo Debug ----------------\n");
 }

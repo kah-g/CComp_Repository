@@ -30,5 +30,7 @@ void PrintaBaralho (Baralho *brl);
 void PrintaCarta (Carta *ct);
 void PrintaCelulaCarta (CelulaBaralho *ctbrl);
 void PrintaBaralhoNumerado (Baralho *brl);
+CelulaBaralho* CriaCarta (int naipe, int valor);
+void LiberaCarta (CelulaBaralho* ct);
 
 #endif

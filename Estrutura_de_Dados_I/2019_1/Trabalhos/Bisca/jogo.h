@@ -15,8 +15,8 @@ CelulaBaralho* JogadaReal (Jogador* jogg);
 CelulaBaralho* JogadaIA (Jogador* jogg);
 void LimparPlayers (Players *jogadores);
 
-
 void IniciaJogo (int tipoJogo);
 void DistribuiCartas (Baralho *brl, Players *jogadores);
+void Debug ();
 
 #endif
