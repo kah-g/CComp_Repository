@@ -384,12 +384,12 @@ void Debug () {
           PrintaBaralho(debug);
         }
         if(op == 2) {
-          int op2 = 0;
+          int pontoC = 0;
           do {
             printf("Escolha onde cortar o baralho.\n");
-            scanf("%d", &op2);
-          }while (op2 < 1 || op2>VerificaBaralho(debug));
-          Carta* cortada = CortaBaralho(debug, op2);
+            scanf("%d", &pontoC);
+          }while (pontoC < 1 || pontoC>VerificaBaralho(debug));
+          Carta* cortada = CortaBaralho(debug, pontoC);
           printf("Carta cortada:\n");
           PrintaCarta(cortada);
           printf("Baralho apos o corte:\n");
@@ -398,12 +398,12 @@ void Debug () {
         if(op == 3) {
           int naipe, valor;
           do {
-            printf("Escolha o naipe da carta a ser retirada:\n1-Ouro.\n2-Espadas.\n3-Copas.\n4-Paus");
+            printf("Escolha o naipe da carta a ser retirada:\n1-Ouro.\n2-Espadas.\n3-Copas.\n4-Paus.\n");
             scanf("%d", &naipe);
-            naipe--;
-          }while(naipe <0 || naipe >3);
+            //naipe--;
+          }while(naipe <0 || naipe >4);
           do{
-            printf("Escolha o valor da carta a ser retirada:\n1-AS.\n11-Valete.\n12-Rainha.\n13-Rei");
+            printf("Escolha o valor da carta a ser retirada:\n1-AS.\n11-Valete.\n12-Rainha.\n13-Rei.\n");
             scanf("%d", &valor);
             if(valor == 1) {
               valor = 14;

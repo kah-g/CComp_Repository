@@ -24,7 +24,7 @@ Baralho* InicializaBaralho () {
   brl->prim = NULL;
   brl->ult = NULL;
   //iniciar cada naipe
-  //ouros = 0, espadas = 1, copas = 2, paus = 3
+  //ouros = 1, espadas = 2, copas = 3, paus = 4
   for(int i=0; i < 4; i++) {
     for(int j=1; j < 11; j++) {
       CelulaBaralho *cb = (CelulaBaralho*) malloc (sizeof(CelulaBaralho));
@@ -37,7 +37,7 @@ Baralho* InicializaBaralho () {
         cb->prox = NULL;
       }
       cb->ct = (Carta*) malloc (sizeof(Carta));
-      cb->ct->naipe = i;
+      cb->ct->naipe = i+1;
       switch (j) {
         case 1:
           cb->ct->valor = 14; //as
@@ -101,7 +101,7 @@ CelulaBaralho* RetiraCarta (int naipe, int valor, Baralho *brl) {
   aux = brl->prim;
   //foi tentando usando && em um while so, mas dava erro de logica, o naipe de ouros era 0 entao o &&
   //sempre era verdadeiro
-  while(aux != NULL && aux->ct->naipe != naipe && aux->ct->valor) {
+  while(aux != NULL && (aux->ct->naipe != naipe || aux->ct->valor != valor)) {
     if(aux->prox == NULL) {
       printf("Erro: Carta nao esta neste baralho.\n");
       return NULL;
@@ -109,14 +109,14 @@ CelulaBaralho* RetiraCarta (int naipe, int valor, Baralho *brl) {
     auxAnt = aux;
     aux = aux->prox;
   }
-  while(aux != NULL && aux->ct->valor != valor) {
+  /*while(aux != NULL && aux->ct->valor != valor) {
     if(aux->prox == NULL) {
       printf("Erro: Carta nao esta neste baralho.\n");
       return NULL;
     }
     auxAnt = aux;
     aux = aux->prox;
-  }
+  }*/
   if(aux == brl->prim) {
     brl->prim = aux->prox;
     aux->prox = NULL;
@@ -174,6 +174,7 @@ Carta* CortaBaralho (Baralho *brl, int PontoCorte) {
   //int aleatorio;
   //srand(time(0));
   aux = brl->prim;
+  PontoCorte--;
   //aleatorio = rand()%brl->quantidade;
   for(int i=0; i < PontoCorte; i++) {
     aux = aux->prox;
@@ -242,6 +243,10 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
   int num = 0, Pos;
   int np0 = 0, np1 = 0, np2 = 0, np3 = 0;
   int vl0 = 0, vl1 = 0, vl2 = 0, vl3 = 0;
+  //np0 e vl0 equivalem a ouro que e o naipe 1
+  //np1 e vl1 equivalem a espadas que e o naipe 2
+  //np2 e vl2 equivalem a copas que e o naipe 3
+  //np3 e vl3 equivalem a paus que e o naipe 4
   CelulaBaralho *aux = brl->prim;
   for(int i=0; i < brl->quantidade; i++) {
     if(aux->ct->naipe == trunfo->naipe) {
@@ -256,7 +261,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
       }
     }
     if(aux->ct->naipe != trunfo->naipe) {
-      if(aux->ct->naipe == 0) {
+      if(aux->ct->naipe == 1) {
         np0++;
         if(vl0 != 0) {
           if(aux->ct->valor > vl0) {
@@ -266,7 +271,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
           vl0 = aux->ct->valor;
         }
       }
-      if(aux->ct->naipe == 1) {
+      if(aux->ct->naipe == 2) {
         np1++;
         if(vl1 != 0) {
           if(aux->ct->valor > vl1) {
@@ -276,7 +281,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
           vl1 = aux->ct->valor;
         }
       }
-      if(aux->ct->naipe == 2) {
+      if(aux->ct->naipe == 3) {
         np2++;
         if(vl2 != 0) {
           if(aux->ct->valor > vl2) {
@@ -286,7 +291,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
           vl2 = aux->ct->valor;
         }
       }
-      if(aux->ct->naipe == 3) {
+      if(aux->ct->naipe == 4) {
         np3++;
         if(vl3 != 0) {
           if(aux->ct->valor > vl3) {
@@ -306,7 +311,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
       CelulaBaralho *aux = brl->prim;
       if((np0 > 1) && !((np1 > 1) || (np2 > 1 || (np3 > 1)))) {
         for(int i=0; i < brl->quantidade; i++) {
-          if(aux->ct->naipe == 0 && aux->ct->valor == vl0) {
+          if(aux->ct->naipe == 1 && aux->ct->valor == vl0) {
             return i;
           }
           aux = aux->prox;
@@ -314,7 +319,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
       }
       if((np1 > 1) && !((np0 > 1) || (np2 > 1 || (np3 > 1)))) {
         for(int i=0; i < brl->quantidade; i++) {
-          if(aux->ct->naipe == 1 && aux->ct->valor == vl1) {
+          if(aux->ct->naipe == 2 && aux->ct->valor == vl1) {
             return i;
           }
           aux = aux->prox;
@@ -322,7 +327,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
       }
       if((np2 > 1) && !((np1 > 1) || (np0 > 1 || (np3 > 1)))) {
         for(int i=0; i < brl->quantidade; i++) {
-          if(aux->ct->naipe == 2 && aux->ct->valor == vl2) {
+          if(aux->ct->naipe == 3 && aux->ct->valor == vl2) {
             return i;
           }
           aux = aux->prox;
@@ -330,7 +335,7 @@ int ComparaCartas (Baralho* brl, Carta* trunfo) {
       }
       if((np3 > 1) && !((np1 > 1) || (np2 > 1 || (np0 > 1)))) {
         for(int i=0; i < brl->quantidade; i++) {
-          if(aux->ct->naipe == 3 && aux->ct->valor == vl3) {
+          if(aux->ct->naipe == 4 && aux->ct->valor == vl3) {
             return i;
           }
           aux = aux->prox;
@@ -381,16 +386,16 @@ void PrintaBaralho (Baralho *brl) {
   while(aux != NULL) {
     printf("Naipe: ");
     switch (aux->ct->naipe) {
-      case 0:
+      case 1:
         printf("OUROS  ,");
         break;
-      case 1:
+      case 2:
         printf("ESPADAS  ,");
         break;
-      case 2:
+      case 3:
         printf("COPAS  ,");
         break;
-      case 3:
+      case 4:
         printf("PAUS  ,");
         break;
     }
@@ -436,16 +441,16 @@ void PrintaBaralho (Baralho *brl) {
 void PrintaCarta (Carta *ct) {
   printf("Naipe: ");
   switch (ct->naipe) {
-    case 0:
+    case 1:
       printf("OUROS  ,");
       break;
-    case 1:
+    case 2:
       printf("ESPADAS  ,");
       break;
-    case 2:
+    case 3:
       printf("COPAS  ,");
       break;
-    case 3:
+    case 4:
       printf("PAUS  ,");
       break;
   }
@@ -498,16 +503,16 @@ void PrintaBaralhoNumerado (Baralho *brl) {
   while(aux != NULL) {
     printf("%d - Naipe: ", i);
     switch (aux->ct->naipe) {
-      case 0:
+      case 1:
         printf("OUROS  ,");
         break;
-      case 1:
+      case 2:
         printf("ESPADAS  ,");
         break;
-      case 2:
+      case 3:
         printf("COPAS  ,");
         break;
-      case 3:
+      case 4:
         printf("PAUS  ,");
         break;
     }
