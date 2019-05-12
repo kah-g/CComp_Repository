@@ -24,6 +24,7 @@ CelulaBaralho* RetornaCartaUlt (Baralho* brl);
 int ComparaCartas (Baralho* brl, Carta* trunfo);
 int ContagemPontos (Baralho *brl);
 void LimparBaralhos (Baralho *brl);
+int ComparaCartasIa (Baralho* brl, Carta* trunfo);
 
 
 void PrintaBaralho (Baralho *brl);

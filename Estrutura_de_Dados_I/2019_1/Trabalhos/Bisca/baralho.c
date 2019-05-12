@@ -380,6 +380,49 @@ void LimparBaralhos (Baralho *brl) {
   }
 }
 
+int ComparaCartasIa (Baralho* brl, Carta* trunfo) {
+  //retorna a posicao da melhor carta a ser jogada
+  int num = 0, Pos, trf = 0;
+  CelulaBaralho *aux = brl->prim;
+  for(int i=0; i < brl->quantidade; i++) {
+    if(aux->ct->naipe == trunfo->naipe) {
+      trf = 1;
+      if(num != 0) {
+        if(num < aux->ct->valor) {
+          num = aux->ct->valor;
+          Pos = i;
+        }
+      } else {
+        num = aux->ct->valor;
+        Pos = i;
+      }
+    }
+    if(aux->ct->naipe != trunfo->naipe && trf == 0) {
+      if(aux->ct->valor > num) {
+        num = aux->ct->valor;
+        Pos = i;
+      }
+    }
+    aux = aux->prox;
+  }
+  if(trf == 1) {
+    return Pos;
+  } else {
+    srand(time(0));
+    int alt = rand()%2; //isso e um sorteio pra decididir se ele vai
+    //jogar a maior carta ou se vai jogar uma carta aleatoria
+    if(alt == 0) {
+      //em caso 0 joga a maior Carta
+      return Pos;
+    }
+    if(alt == 1) {
+      //em caso 1 joga uma carta aleatoria
+      Pos = rand()%brl->quantidade;
+      return Pos;
+    }
+  }
+}
+
 void PrintaBaralho (Baralho *brl) {
   CelulaBaralho *aux;
   aux = brl->prim;

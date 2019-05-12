@@ -44,12 +44,12 @@ void Menu () {
     //se modo de jogo e 2 e a dificuldade e 1, entao passa 2 como parametro
   }
   if(op1 == 1 && op2 == 2) {
-    printf("Opa, essas opcoes ainda nao estao prontas. Sorryyyy!\n\n");
-    exit(0);
+    //se modo de jogo e 1 e a dificuldade e 2, entao passa 3 como parametro
+    IniciaJogo(3);
   }
   if(op1 == 2 && op2 == 2) {
-    printf("Opa, essas opcoes ainda nao estao prontas. Sorryyyy!\n\n");
-    exit(0);
+    //se modo de jogo e 2 e a dificuldade e 2, entao passa 4 como parametro
+    IniciaJogo(4);
   }
   if(op1 == 3) {
     exit(0);
@@ -78,9 +78,9 @@ CelulaJogador* InicializaJogadorIA () {
   return jogg;
 }
 
-int InicializaJogo (int tipoJogo, Players *jogadores) {
-  if(tipoJogo == 1) {
-    //inicia dois jogadores no modo facil
+int InicializaJogo (int tipoJogo, Players *jogadores, int* posP) {
+  if(tipoJogo == 1 || tipoJogo == 3) {
+    //inicia dois jogadores
     CelulaJogador *jogadorReal = InicializaJogador(); //sempre e o numero 0
     CelulaJogador *jogadorIA = InicializaJogadorIA(); //numero 1
     srand(time(0));
@@ -94,19 +94,21 @@ int InicializaJogo (int tipoJogo, Players *jogadores) {
       PontoCorte--;
       jogadores->prim = jogadorReal;
       printf("Voce eh o jogador: 1.\n");
+      *posP = 1;
     } else {
       PontoCorte = rand()%40;
       printf("\nJogador IA 1 cortou o baralho em: %d\n", PontoCorte);
       jogadores->prim = jogadorIA;
       printf("Voce eh o jogador: 2.\n");
+      *posP = 2;
     }
     jogadorReal->prox = jogadorIA;
     jogadorIA->prox = jogadorReal;
     jogadores->QttJogadores = 2;
     return PontoCorte;
   }
-  if(tipoJogo == 2) {
-    //inicia 4 jogadores no modo facil
+  if(tipoJogo == 2 || tipoJogo == 4) {
+    //inicia 4 jogadores
     CelulaJogador *jogadorReal = InicializaJogador(); //sempre e o numero 0
     CelulaJogador *jogadorIA1 = InicializaJogadorIA(); //numero 1
     CelulaJogador *jogadorIA2 = InicializaJogadorIA(); //numero 2
@@ -143,6 +145,7 @@ int InicializaJogo (int tipoJogo, Players *jogadores) {
     for(int l=0; l < jogadores->QttJogadores; l++) {
       if(aux->jog->ia == 0) {
         printf("Voce eh o jogador: %d.\n", l+1);
+        *posP = l+1;
       }
       aux = aux->prox;
     }
@@ -272,21 +275,62 @@ void LimparPlayers (Players *jogadores) {
   }
 }
 
+CelulaBaralho* JogadaIAD (Jogador* jogg, Carta* trunfo) {
+  int qut = VerificaBaralho(jogg->mao);
+  int ct;
+  if(qut == 3) {
+    ct = ComparaCartasIa(jogg->mao, trunfo);
+    CelulaBaralho *aux = RetornaCartaPrim(jogg->mao);
+    switch (ct) {
+      case 0:
+        aux = RetiraCartaGambiarra(aux,jogg->mao);
+        return aux;
+      case 1:
+        aux = RetornaCartaProx(aux);
+        aux = RetiraCartaGambiarra(aux,jogg->mao);
+        return aux;
+      case 2:
+        aux = RetornaCartaUlt(jogg->mao);
+        aux = RetiraCartaGambiarra(aux,jogg->mao);
+        return aux;
+    }
+  }
+  if(qut == 2) {
+    ct = ComparaCartasIa(jogg->mao, trunfo);
+    CelulaBaralho *aux = RetornaCartaPrim(jogg->mao);
+    switch (ct) {
+      case 0:
+        aux = RetiraCartaGambiarra(aux,jogg->mao);
+        return aux;
+      case 1:
+        aux = RetornaCartaUlt(jogg->mao);
+        aux = RetiraCartaGambiarra(aux,jogg->mao);
+        return aux;
+    }
+  }
+  if(qut == 1) {
+    CelulaBaralho *aux = RetornaCartaPrim(jogg->mao);
+    aux = RetiraCartaGambiarra(aux,jogg->mao);
+    return aux;
+  }
+}
+
 void IniciaJogo (int tipoJogo) {
   Baralho* brl = InicializaBaralho();
   brl = EmbaralharBaralho(brl);
   Players *jogadores = (Players*) malloc (sizeof(Players));
-  int PontoCorte = InicializaJogo(tipoJogo, jogadores);
+  int posP = 0;
+  int PontoCorte = InicializaJogo(tipoJogo, jogadores, &posP);
   Carta* trunfo = CortaBaralho(brl, PontoCorte);
   /*printf("\nTrunfo do Jogo:");
   PrintaCarta(trunfo);*/
   DistribuiCartas(brl, jogadores);
   Baralho* mesa = InicializaBaralhoVazio();
   int rodadas=0;
-  if(tipoJogo == 1) {
+  if(tipoJogo == 1 || tipoJogo == 3) {
     rodadas = 40/2;
   }
-  if(tipoJogo == 2) {
+  if(tipoJogo == 2 || tipoJogo == 4) {
     rodadas = 40/4;
   }
   for(int l=0; l < rodadas; l++) {
@@ -300,7 +344,12 @@ void IniciaJogo (int tipoJogo) {
         aux = JogadaReal(auxJ->jog);
       } else {
         printf("+++++++++++ Vez do Jogador %d (IA). +++++++++++\n", i+1);
-        aux = JogadaIA(auxJ->jog);
+        if(tipoJogo == 1 || tipoJogo == 2) {
+          aux = JogadaIA(auxJ->jog);
+        }
+        if(tipoJogo == 3 || tipoJogo == 4) {
+          aux = JogadaIAD(auxJ->jog, trunfo);
+        }
       }
       printf("Carta Jogada: ");
       PrintaCelulaCarta(aux);
@@ -317,7 +366,7 @@ void IniciaJogo (int tipoJogo) {
       CtGan = RetornaCartaProx(CtGan);
       JogGan = JogGan->prox;
     }
-    printf("Carta ganhadora da rodada: ");
+    printf("Jogador %d ganhou a rodada com a carta: ", gan+1);
     PrintaCelulaCarta(CtGan);
     //passa as cartas pro monte do jogador ganhador da rodada
     while(VerificaBaralho(mesa) > 0) {
@@ -348,7 +397,11 @@ void IniciaJogo (int tipoJogo) {
     }
     JogP = JogP->prox;
   }
-  printf("\nJogador %d ganhou. Pontuacao total: %d\n", Gan+1, MaxPontos);
+  if(Gan+1 == posP) {
+    printf("\nVoce ganhou!! Pontuacao total: %d.\n", MaxPontos);
+  } else {
+    printf("\nVoce perdeu! Jogador %d (IA) ganhou. Pontuacao total: %d\n", Gan+1, MaxPontos);
+  }
   LimparPlayers(jogadores);
   LimparBaralhos(mesa);
   LimparBaralhos(brl);
@@ -413,12 +466,16 @@ void Debug () {
           CelulaBaralho* cbR;
           cbR = CriaCarta(naipe, valor);
           cb2 = RetiraCartaGambiarra(cbR, debug);
-          printf("Carta retirada:\n");
-          PrintaCelulaCarta(cbR);
-          printf("Baralho apos a retirada da carta:\n");
-          PrintaBaralho(debug);
-          LiberaCarta(cb2);
-          LiberaCarta(cbR);
+          if(cb2 == NULL) {
+            LiberaCarta(cbR);
+          } else {
+            printf("Carta retirada:\n");
+            PrintaCelulaCarta(cbR);
+            printf("Baralho apos a retirada da carta:\n");
+            PrintaBaralho(debug);
+            LiberaCarta(cb2);
+            LiberaCarta(cbR);
+          }
         }
       } else {
         printf("Erro: Baralho vazio ou nao existente.\n");
