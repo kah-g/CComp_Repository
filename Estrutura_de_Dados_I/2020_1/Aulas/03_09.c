@@ -9,10 +9,10 @@ int compara (char* s1, char* s2);
 
 int main () {
 	printf ("Testando os exercicios de hoje.\n");
-	
-	printf ("Primeiro exercicio:\nEntre com um caractere.\n");
+
+	printf ("\nPrimeiro exercicio:\nEntre com um caractere.\n");
 	char ch1;
-	scanf ("%c", &ch1);
+	scanf (" %c", &ch1);
 	int dig = digito (ch1);
 	if (dig == 1) {
 		printf ("Esse caractere eh um digito.\n");
@@ -20,44 +20,45 @@ int main () {
 	else {
 		printf ("Esse caractere nao eh um digito.\n");
 	}
-	
-	printf ("Segundo exercicio:\nEntre com um caractere.\n");
+
+	printf ("\nSegundo exercicio:\nEntre com um caractere.\n");
 	char ch2;
-	scanf ("%c", &ch2);
+	scanf (" %c", &ch2);
 	char ch3 = maiuscula (ch2);
 	printf ("Seu caractere: %c .\n", ch3);
-	
-	printf ("Terceiro exercicio:\nEntre com uma palavra.\n");
-	char* str1; //isso ta certo?
+
+	printf ("\nTerceiro exercicio:\nEntre com uma palavra.\n");
+	char* str1 = (char*) malloc (sizeof(char)*12); //isso ta certo?
 	scanf (" %s", str1);
 	int com = comprimento (str1);
 	printf ("O tamanho da palavra entrada eh: %d .\n", com);
-	
-	printf ("Quarto exercicio:\nA palavra entrada anterirormente sera copiada.\n");
+
+	printf ("\nQuarto exercicio:\nA palavra entrada anterirormente sera copiada.\n");
 	char* str2 = (char*) malloc (sizeof(char)*12);
 	copia (str1, str2);
 	printf ("String origem: %s - String destino: %s. \n", str1, str2);
-	
-	printf ("Quinto exercicio:\nEntre com uma palavra.\n");
+
+	printf ("\nQuinto exercicio:\nEntre com uma palavra.\n");
 	char* str3; //tomar cuidado com essa tb
 	int resultado = compara (str2, str3);
 	switch (resultado) {
 		case 0:
 			printf ("As duas palavras sao iguais.\n");
 		break;
-		
+
 		case -1:
 			printf ("A palavra %s precede %s .\n", str2, str3);
 		break;
-		
+
 		case 1:
 			printf ("A palavra %s precede %s .\n", str3, str2);
 		break;
-		
+
 		default:
 		 printf ("Eita!\n");
 	}
-	
+
+	free(str1);
 	free(str2);
 }
 
@@ -65,16 +66,19 @@ int digito (char c) {
 	//Informar se o caractere c eh um digito ou não
 	if (c >= '0' && c <= '9') {
 		return 1;
-	} 
+	}
 	return 0;
 }
 
 char maiuscula (char c) {
 	//se o caractere entrado for minusculo ele se tornara maisculo, caso contrario permanecera o mesmo
+	char l;
 	if (c >= 'a' && c <= 'z') {
-		c += 32;
+		l = 'A' + (c - 'a');
+	} else {
+		l = c;
 	}
-	return c;
+	return l;
 }
 
 int comprimento (char* s) {
