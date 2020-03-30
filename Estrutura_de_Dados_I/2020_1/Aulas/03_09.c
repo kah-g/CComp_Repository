@@ -4,7 +4,7 @@
 int digito (char c);
 char maiuscula (char c);
 int comprimento (char* s);
-void copia (char* destino, char* origem);
+void copia (char* origem, char* destino);
 int compara (char* s1, char* s2);
 
 int main () {
@@ -33,13 +33,14 @@ int main () {
 	int com = comprimento (str1);
 	printf ("O tamanho da palavra entrada eh: %d .\n", com);
 
-	printf ("\nQuarto exercicio:\nA palavra entrada anterirormente sera copiada.\n");
+	printf ("\nQuarto exercicio:\nA palavra entrada anteriormente sera copiada.\n");
 	char* str2 = (char*) malloc (sizeof(char)*12);
 	copia (str1, str2);
 	printf ("String origem: %s - String destino: %s. \n", str1, str2);
 
 	printf ("\nQuinto exercicio:\nEntre com uma palavra.\n");
-	char* str3; //tomar cuidado com essa tb
+	char* str3 = (char*) malloc (sizeof(char)*12);
+	scanf (" %s", str3);
 	int resultado = compara (str2, str3);
 	switch (resultado) {
 		case 0:
@@ -90,7 +91,7 @@ int comprimento (char* s) {
 	return i; //talvez o retorno tenha que ser i -1?
 }
 
-void copia (char* destino, char* origem) {
+void copia (char* origem, char* destino) {
 	//criando a funcao strcpy
 	int tamanho = comprimento (origem);
 	int i;
